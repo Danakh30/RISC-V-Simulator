@@ -1,8 +1,6 @@
-#include<bits/stdc++.h>
-using namespace std;
+#include"parsing.cpp"
 
 int PC;
-register_file reg;
 unordered_map<uint32_t, uint8_t> memory;
 unordered_map<uint32_t, string> instructions;
 
@@ -20,6 +18,7 @@ public:
         return r[index];
     }
 };
+register_file reg;
 
 void writeNBytes(uint32_t address, uint32_t value, int byte_count)
 {
@@ -51,15 +50,15 @@ void LUI(int rd, int immidiate)
     PC++;
 }
 
-void AUIPC(int address, int rd, int immidiate)
+void AUIPC(int rd, int immidiate)
 {
-    reg[rd] = (immidiate << 12) + address;
+    reg[rd] = (immidiate << 12) + PC;
     PC++;
 }
 
-void JAL(int address, int rd, int r)
+void JAL(int rd, int r)
 {
-    reg[rd] = address + 1;
+    reg[rd] = PC + 1;
     PC += r;
 }
 
