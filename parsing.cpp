@@ -79,22 +79,78 @@ void parseJALR(string JALR)
     program.push_back(temp);
 }
 
+void parseBEQ(string BEQ)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(BEQ, "BEQ");
+    temp.opcode = "BEQ";
+    temp.r1=stoi(tokens[0].substr(1));
+    temp.r2=stoi(tokens[1].substr(1));
+    temp.immidiate=stoi(tokens[2]);
+    program.push_back(temp); 
+}
+
+void parseBNE(string BNE)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(BNE, "BNE");
+    temp.opcode = "BNE";
+    temp.r1=stoi(tokens[0].substr(1));
+    temp.r2=stoi(tokens[1].substr(1));
+    temp.immidiate=stoi(tokens[2]);
+    program.push_back(temp); 
+}
+
+void parseBLT(string BLT)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(BLT, "BLT");
+    temp.opcode = "BLT";
+    temp.r1=stoi(tokens[0].substr(1));
+    temp.r2=stoi(tokens[1].substr(1));
+    temp.immidiate=stoi(tokens[2]);
+    program.push_back(temp); 
+}
+
+void parseBGE(string BGE)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(BGE, "BGE");
+    temp.opcode = "BGE";
+    temp.r1=stoi(tokens[0].substr(1));
+    temp.r2=stoi(tokens[1].substr(1));
+    temp.immidiate=stoi(tokens[2]);
+    program.push_back(temp); 
+}
+
+void parseBLTU(string BLTU)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(BLTU, "BLTU");
+    temp.opcode = "BLTU";
+    temp.r1=stoi(tokens[0].substr(1));
+    temp.r2=stoi(tokens[1].substr(1));
+    temp.immidiate=stoi(tokens[2]);
+    program.push_back(temp);   
+}
+
+void parseBGEU(string BGEU)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(BGEU, "BGEU");
+    temp.opcode = "BGEU";
+    temp.r1=stoi(tokens[0].substr(1));
+    temp.r2=stoi(tokens[1].substr(1));
+    temp.immidiate=stoi(tokens[2]);
+    program.push_back(temp);   
+}
+
 void parse(string inst)
 {
     size_t space = inst.find(' ');
     string temp = inst.substr(0,space);
     FunctionPointer func = parseFunctions[temp];
     func(inst);
-    // if(temp == "LUI"){}
-    // else if (temp == "AUIPC"){}
-    // else if (temp == "JAL"){}
-    // else if (temp == "JALR"){}
-    // else if (temp == "BEQ"){}
-    // else if (temp == "BNE"){}
-    // else if (temp == "BLT"){}
-    // else if (temp == "BGE"){}
-    // else if (temp == "BLTU"){}
-    // else if (temp == "BGEU"){}
     // else if (temp == "LB"){}
     // else if (temp == "LH"){}
     // else if (temp == "LW"){}

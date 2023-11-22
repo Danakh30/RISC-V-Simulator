@@ -44,36 +44,86 @@ void readNBytes(uint32_t address, int byte_count, int index)
 }
 //LW x1, 32(x18) 
 //SW rs2, offset(rs1)
-void LUI(int rd, int immidiate)
+void LUI(instruction exe)
 {
-    reg[rd] = immidiate << 12 ;
-    PC++;
+    reg[exe.rd] = exe.immidiate << 12;
+    PC+=4;
 }
 
-void AUIPC(int rd, int immidiate)
+void AUIPC(instruction exe)
 {
-    reg[rd] = (immidiate << 12) + PC;
-    PC++;
+    reg[exe.rd] = (exe.immidiate << 12) + PC;
+    PC+=4;
 }
 
-void JAL(int rd, int r)
+void JAL(instruction exe)
 {
-    reg[rd] = PC + 1;
-    PC += r;
+    reg[exe.rd] = PC + 4;
+    PC += (exe.immidiate * 4);
 }
 
-void JALR(int address, int rd, int r, int offset)
+void JALR(instruction exe)
 {
-    reg[rd] = address + 1;
-    PC = reg[r] + offset;
+    reg[exe.rd] = PC + 4;
+    PC = 4*(reg[exe.r1] + exe.immidiate);
 }
 
-void BEQ(int r1, int r2, int offset)
+void BEQ(instruction exe)
 {
-    if(reg[r1]==reg[r2])
+    if(reg[exe.r1]==reg[exe.r2])
     {
-        PC += offset;
+        PC += (exe.immidiate * 4);
     }
+    else{PC += 4;}
+}
+
+void BNE(instruction exe)
+{
+    if(reg[exe.r1]!=reg[exe.r2])
+    {
+        PC += (exe.immidiate * 4);
+    }
+    else{PC += 4;}
+}
+
+void BLT(instruction exe)
+{
+    if(reg[exe.r1] < reg[exe.r2])
+    {
+        PC += (exe.immidiate * 4);
+    }
+    else{PC += 4;}
+}
+
+void BGE(instruction exe)
+{
+    if(reg[exe.r1] >= reg[exe.r2])
+    {
+        PC += (exe.immidiate * 4);
+    }
+    else{PC += 4;}
+}
+
+void BLTU(instruction exe)
+{
+    unsigned int unsignedValue1 = static_cast<unsigned int>(exe.r1);
+    unsigned int unsignedValue2 = static_cast<unsigned int>(exe.r2);
+    if(unsignedValue1 < unsignedValue2)
+    {
+        PC += (4*exe.immidiate);
+    }
+    else{PC += 4;}
+}
+
+void BGEU(instruction exe)
+{
+    unsigned int unsignedValue1 = static_cast<unsigned int>(exe.r1);
+    unsigned int unsignedValue2 = static_cast<unsigned int>(exe.r2);
+    if(unsignedValue1 >= unsignedValue2)
+    {
+        PC += (4*exe.immidiate);
+    }
+    else{PC += 4;} 
 }
 
  void AND(int RD,int RS1, int RS2)
