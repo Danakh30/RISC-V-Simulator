@@ -1,8 +1,8 @@
 #include"parsing.cpp"
 
 int PC;
-unordered_map<uint32_t, uint8_t> memory;
-unordered_map<uint32_t, string> instructions;
+unordered_map<uint32_t, __int8> memory;
+
 
 class register_file {
 private:
@@ -32,7 +32,7 @@ void writeNBytes(uint32_t address, uint32_t value, int byte_count)
 
     // 00000000 00000000 00000000 00010101
     // add + 3  add + 2  add + 1  add + 0
-}
+ }
 void readNBytes(uint32_t address, int byte_count, int index)
 {
     reg[index] = 0;
@@ -106,8 +106,8 @@ void BGE(instruction exe)
 
 void BLTU(instruction exe)
 {
-    unsigned int unsignedValue1 = static_cast<unsigned int>(exe.r1);
-    unsigned int unsignedValue2 = static_cast<unsigned int>(exe.r2);
+    unsigned int unsignedValue1 = static_cast<unsigned int>(reg[exe.r1]);
+    unsigned int unsignedValue2 = static_cast<unsigned int>(reg[exe.r2]);
     if(unsignedValue1 < unsignedValue2)
     {
         PC += (4*exe.immidiate);
@@ -124,6 +124,33 @@ void BGEU(instruction exe)
         PC += (4*exe.immidiate);
     }
     else{PC += 4;} 
+}
+
+void LB(instruction exe)
+{
+
+    __int8 loadedByte=memory[reg[exe.r1]+exe.immidiate];
+    reg[exe.rd] = static_cast<int32_t>(static_cast<int8_t>(loadedByte));
+    PC+=4;
+}
+
+void LH(instruction exe)
+{
+    int16_t halfword = (memory[reg[exe.r1] + exe.immidiate + 1] << 8) | memory[reg[exe.r1] + exe.immidiate];
+    reg[exe.rd] = static_cast<int32_t>(halfword);
+    PC+=4;
+}
+
+void LW(instruction exe)
+{
+    int32_t word = 0;
+    // Little-endian byte order: lowest address contains least significant byte
+    for (int i = 0; i < 4; ++i) 
+    {
+        word |= (static_cast<uint32_t>(memory[reg[exe.r1] + exe.immidiate + i]) & 0xFF) << (i * 8);
+    }
+    reg[exe.rd] = word;
+    PC+=4;
 }
 
  void AND(int RD,int RS1, int RS2)

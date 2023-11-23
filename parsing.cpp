@@ -158,15 +158,38 @@ void parseLB(string LB)
     program.push_back(temp);
 }
 
+void parseLH(string LH)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(LH, "LH");
+    temp.opcode = "LH";
+    temp.rd = stoi(tokens[0].substr(1));
+    size_t pos = tokens[1].find('(');
+    size_t pos2= tokens[1].find(')');
+    temp.immidiate = stoi(tokens[1].substr(0,pos));
+    temp.r1 = stoi(tokens[1].substr(pos+2,pos2));
+    program.push_back(temp);
+}
+
+void parseLW(string LW)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(LW, "LW");
+    temp.opcode = "LW";
+    temp.rd = stoi(tokens[0].substr(1));
+    size_t pos = tokens[1].find('(');
+    size_t pos2= tokens[1].find(')');
+    temp.immidiate = stoi(tokens[1].substr(0,pos));
+    temp.r1 = stoi(tokens[1].substr(pos+2,pos2));
+    program.push_back(temp);
+}
+
 void parse(string inst)
 {
     size_t space = inst.find(' ');
     string temp = inst.substr(0,space);
     FunctionPointer func = parseFunctions[temp];
     func(inst);
-    // else if (temp == "LB"){}
-    // else if (temp == "LH"){}
-    // else if (temp == "LW"){}
     // else if (temp == "LBU"){}
     // else if (temp == "LHU"){}
     // else if (temp == "SB"){}
