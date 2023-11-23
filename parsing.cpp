@@ -145,6 +145,19 @@ void parseBGEU(string BGEU)
     program.push_back(temp);   
 }
 
+void parseLB(string LB)
+{
+    instruction temp;
+    vector<string> tokens = removeSubstring(LB, "LB");
+    temp.opcode = "LB";
+    temp.rd = stoi(tokens[0].substr(1));
+    size_t pos = tokens[1].find('(');
+    size_t pos2= tokens[1].find(')');
+    temp.immidiate = stoi(tokens[1].substr(0,pos));
+    temp.r1 = stoi(tokens[1].substr(pos+2,pos2));
+    program.push_back(temp);
+}
+
 void parse(string inst)
 {
     size_t space = inst.find(' ');
@@ -185,8 +198,8 @@ void extractCode()
 
 int main()
 {
-    parseFunctions["LUI"] = &parseLUI;
-    parse("LUI x10, 10");
+    parseFunctions["LB"] = &parseLB;
+    parse("LB x10, 10(x5)");
     for(auto i: program)
     {
         cout << i.opcode << '\n' << i.rd << '\n' << i.immidiate << '\n' << i.r1 << '\n' << i.r2 << endl; 
