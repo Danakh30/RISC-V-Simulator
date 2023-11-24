@@ -3,7 +3,9 @@ using namespace std;
 
 
 register_file reg;
-map<uint32_t, uint8_t> memory;
+map<uint32_t, uint8_t> memory; 
+int pc;//address, value (byte value)
+// unordered_map<uint32_t, string> instructions;
 
 class register_file {
 private:
@@ -18,6 +20,20 @@ public:
         r[0] = 0;
         return r[index];
     }
+};
+struct instruction
+{
+    string opcode;
+    int r1, r2, rd, immidiate;
+
+    instruction()
+    {
+        opcode = "";
+        r1 = 0;
+        r2 = 0;
+        rd = 0;
+        immidiate = 0;
+    }    
 };
 
 void writeNBytes(uint32_t address, uint32_t value, int byte_count)
@@ -38,7 +54,7 @@ void readNBytes(uint32_t address, int byte_count, int index)
     reg[index] = 0;
 
     for (uint32_t i = 0; i < byte_count; ++i) {
-        reg[index] |= (uint32_t(memory[address + i]) << (8 * i));
+        reg[index] |= (memory[address + i] << (8 * i));
 
     }
 }
@@ -46,88 +62,114 @@ void readNBytes(uint32_t address, int byte_count, int index)
 //SW rs2, offset(rs1)
 
 
- void AND(int RD,int RS1, int RS2)
+ void AND(instruction exe)
 {
     // And x1, x1, x2
-    reg[RD] = reg[RS1] & reg[RS2];
+    reg[exe.rd] = reg[exe.r1] & reg[exe.r2];
+    pc+=4;
     // R3=R1&R2;
  }
- void OR (int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] | reg[RS2];
- }
-void ORI(int RD,int RS1,int immediate)
- {
-    reg[RD] = reg[RS1] | immediate;
- }
- void ADD(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] + reg[RS2];
- }
-void SUB(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] - reg[RS2];
- }
- void ADDI(int RD,int RS1,int immediate)
- {
-    reg[RD] = reg[RS1] + immediate;
- }
- void XOR(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] ^ reg[RS2];
- }
- void XORI(int RD,int RS1,int immediate)
- {
-    reg[RD] = reg[RS1] ^ immediate;
- }
-void SLL(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] << reg[RS2];
- }
-void SLLI(int RD,int RS1,int shamt)
- {
-    reg[RD] = reg[RS1] << uint32_t(shamt);
- }
-void SLT(int RD,int RS1,int RS2)
- {
-    reg[RD] = int32_t(reg[RS1]) < int32_t(reg[RS2]);
- }
-void SLTU(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] < reg[RS2];
- } 
-void SLTIU(int RD,int RS1,int immediate)
- {
-    reg[RD] = reg[RS1] < immediate;
- }
-void SRA(int RD,int RS1,int RS2)
- {
-    reg[RD] = int32_t(reg[RS1]) >> int32_t(reg[RS2]);
- }
-void SRAI(int RD,int RS1,int shamt)
- {
-    reg[RD] = int32_t(reg[RS1]) >> shamt;
- }
-void SRLI(int RD,int RS1,int shamt)
- {
-    reg[RD] = reg[RS1] >> uint32_t(shamt);
- }
-void SRL(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] >> reg[RS2];
- }
-void SLTI(int RD, int RS1, int immediate)
+ void ANDI(instruction exe)
 {
-    reg[RD] = int32_t(reg[RS1]) < immediate;
+    reg[exe.rd] = reg[exe.r1] & exe.immidiate;
+    pc+=4;
+ }
+ void OR (instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] | reg[exe.r2];
+    pc+=4;
+ }
+void ORI(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] | exe.immidiate;
+    pc+=4;
+ }
+ void ADD(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] + reg[exe.r2];
+    pc+=4;
+ }
+void SUB(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] - reg[exe.r2];
+    pc+=4;
+ }
+ void ADDI(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] + exe.immidiate;
+    pc+=4;
+ }
+ void XOR(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] ^ reg[exe.r2];
+    pc+=4;
+ }
+ void XORI(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] ^ exe.immidiate;
+    pc+=4;
+ }
+void SLL(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] << reg[exe.r2];
+    pc+=4;
+ }
+void SLLI(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] << uint32_t(exe.immidiate);
+    pc+=4;
+ }
+void SLT(instruction exe)
+ {
+    reg[exe.rd] = int32_t(reg[exe.r1]) < int32_t(reg[exe.r2]);
+    pc+=4;
+ }
+void SLTU(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] < reg[exe.r2];
+    pc+=4;
+ } 
+void SLTIU(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] < exe.immidiate;
+    pc+=4;
+ }
+void SRA(instruction exe)
+ {
+    reg[exe.rd] = int32_t(reg[exe.r1]) >> int32_t(reg[exe.r2]);
+    pc+=4;
+ }
+void SRAI(instruction exe)
+ {
+    reg[exe.rd] = int32_t(reg[exe.r1]) >> exe.immidiate;
+    pc+=4;
+ }
+void SRLI(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] >> uint32_t(exe.immidiate);
+    pc+=4;
+ }
+void SRL(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] >> reg[exe.r2];
+    pc+=4;
+ }
+void SLTI(instruction exe)
+{
+    reg[exe.rd] = int32_t(reg[exe.r1]) < exe.immidiate;
+    pc+=4;
 }
 void EBREAK() {
     exit(0);
+    pc+=4;
 }
 void ECALL() {
     exit(0);
+    pc+=4;
 }
 void FENCE() {
     exit(0);
+    pc+=4;
 }
 
 void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
