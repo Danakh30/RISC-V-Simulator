@@ -3,13 +3,12 @@ using namespace std;
 
 
 register_file reg;
-map<uint32_t, uint8_t> memory; 
-int pc;//address, value (byte value)
-// unordered_map<uint32_t, string> instructions;
+map<uint32_t, int8_t> memory; 
+int pc;
 
 class register_file {
 private:
-    uint32_t r[32]; //registers
+    uint32_t r[32];
 public:
     register_file() {
         for (int i = 0; i < 32; ++i) {
@@ -39,15 +38,9 @@ struct instruction
 void writeNBytes(uint32_t address, uint32_t value, int byte_count)
 {
     for (uint32_t i = 0; i < byte_count; ++i) {
-        memory[address + i] = value & 0xFF; // 11111111
+        memory[address + i] = value & 0xFF;
         value >>= 8;
     }
-    // 909
-    // 01110101 01111111 01110101 00010101
-    // 00000000 00000000 00000000 11111111 &
-
-    // 00000000 00000000 00000000 00010101
-    // add + 3  add + 2  add + 1  add + 0
 }
 void readNBytes(uint32_t address, int byte_count, int index)
 {
@@ -58,10 +51,6 @@ void readNBytes(uint32_t address, int byte_count, int index)
 
     }
 }
-//LW x1, 32(x18) 
-//SW rs2, offset(rs1)
-
-
  void AND(instruction exe)
 {
     // And x1, x1, x2
@@ -184,11 +173,3 @@ void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
             cout << "Error: Unrecognized base " << base << '\n';
     }
 }
-
-
-// int main() {
-//     reg[0] = 100;
-//     reg[1] = 100;
-//     cout << reg[0] << ' ' << reg[1] << '\n';
-//     return 0;
-// }
