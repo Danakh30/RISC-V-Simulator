@@ -128,17 +128,15 @@ void BGEU(instruction exe)
 
 void LB(instruction exe)
 {
-
-    __int8 loadedByte=memory[reg[exe.r1]+exe.immidiate];
-    reg[exe.rd] = static_cast<int32_t>(static_cast<int8_t>(loadedByte));
+    int8_t loadedByte=static_cast<int8_t>(memory[reg[exe.r1]+exe.immidiate]);
+    reg[exe.rd] = static_cast<int32_t>(loadedByte);
     PC+=4;
 }
 
-void LH(instruction exe)
+void LH(instruction exe) 
 {
     int16_t halfword = (memory[reg[exe.r1] + exe.immidiate + 1] << 8) | memory[reg[exe.r1] + exe.immidiate];
     reg[exe.rd] = static_cast<int32_t>(halfword);
-    PC+=4;
 }
 
 void LW(instruction exe)
@@ -261,9 +259,17 @@ void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
 }
 
 
-// int main() {
-//     reg[0] = 100;
-//     reg[1] = 100;
-//     cout << reg[0] << ' ' << reg[1] << '\n';
-//     return 0;
-// }
+int main() 
+{
+    instruction test;
+    test.r1 = 0; test.rd = 5; test.immidiate = 0;
+    uint32_t number = 12;
+    uint8_t *bytes = reinterpret_cast<uint8_t*>(&number);
+    for (int i = 0; i < 4; ++i) 
+    {
+        memory[i] = bytes[i];
+    }
+    LW(test);
+    cout << reg[test.rd];
+    return 0;
+}

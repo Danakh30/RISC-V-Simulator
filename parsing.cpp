@@ -219,12 +219,12 @@ void extractCode()
 
 
 
-int main()
-{
-    parseFunctions["LB"] = &parseLB;
-    parse("LB x10, 10(x5)");
-    for(auto i: program)
-    {
-        cout << i.opcode << '\n' << i.rd << '\n' << i.immidiate << '\n' << i.r1 << '\n' << i.r2 << endl; 
-    }
-}
+// int main()
+// {
+//     parseFunctions["LB"] = &parseLB;
+//     parse("LB x10, 10(x5)");
+//     for(auto i: program)
+//     {
+//         cout << i.opcode << '\n' << i.rd << '\n' << i.immidiate << '\n' << i.r1 << '\n' << i.r2 << endl; 
+//     }
+// }
