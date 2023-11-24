@@ -1,7 +1,7 @@
 #include"parsing.cpp"
 
 int PC;
-unordered_map<uint32_t, __int8> memory;
+unordered_map<uint32_t, int8_t> memory;
 
 
 class register_file {
@@ -225,15 +225,15 @@ void ORI(int RD,int RS1,int immediate)
     reg[RD] = reg[RS1] | immediate;
     PC++;
  }
- void ADD(int RD,int RS1,int RS2)
+ void ADD(instruction exe)
  {
-    reg[RD] = reg[RS1] + reg[RS2];
-    PC++;
+    reg[exe.rd] = reg[exe.r1] + reg[exe.r2];
+    PC+=4;
  }
-void SUB(int RD,int RS1,int RS2)
+void SUB(instruction exe)
  {
-    reg[RD] = reg[RS1] - reg[RS2];
-    PC++;
+    reg[exe.rd] = reg[exe.r1] - reg[exe.r2];
+    PC+=4;
  }
  void ADDI(int RD,int RS1,int immediate)
  {
@@ -292,13 +292,17 @@ void SLTI(int RD, int RS1, int immediate)
 {
     reg[RD] = int32_t(reg[RS1]) < immediate;
 }
-void EBREAK() {
+void EBREAK(instruction exe) 
+{
     exit(0);
 }
-void ECALL() {
+void ECALL(instruction exe) 
+{
     exit(0);
 }
-void FENCE() {
+void FENCE(instruction exe) 
+{
+    cout << reg[3] << '\n' << reg[4] << endl;
     exit(0);
 }
 
@@ -314,19 +318,75 @@ void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
             cout << "Error: Unrecognized base " << base << '\n';
     }
 }
+using FunctionPointer2 = void (*)(instruction);
+unordered_map<string, FunctionPointer2> instructionFunctions=
+{
+    {"LUI", &LUI},
+    {"AUIPC", &AUIPC},
+    {"JAL", &JAL},
+    {"JALR", &JALR},
+    {"ADDI", &ADDI},
+    {"SLTI", &SLTI},
+    //{"SLTIU", &SLTIU},
+    //{"XORI", &XORI},
+    // {"ORI", &ORI},
+    // //{"ANDI", &ANDI},
+    //{"SLLI", &SLLI},
+    //{"SRLI", &SRLI},
+    //{"SRAI", &SRAI},
+    {"LB", &LB},
+    {"LH", &LH},
+    {"LW", &LW},
+    {"LBU", &LBU},
+    {"LHU", &LHU},
+    {"BEQ", &BEQ},
+    {"BNE", &BNE},
+    {"BLT", &BLT},
+    {"BGE", &BGE},
+    {"BLTU", &BLTU},
+    {"BGEU", &BGEU},
+    {"SB", &SB},
+    {"SH", &SH},
+    {"SW", &SW},
+    {"ADD", &ADD},
+    {"SUB", &SUB},
+    //{"SLL", &SLL},
+    //{"SLT", &SLT},
+    //{"SLTU", &SLTU},
+    // {"XOR", &XOR},
+    //{"SRL", &SRL},
+    // {"SRA", &SRA},
+    // {"OR", &OR},
+    //{"AND", &AND},
+    {"FENCE", &FENCE},
+    {"ECALL", &ECALL},
+    {"EBREAK", &EBREAK}
+}; 
 
+void execute()
+{
+    extractCode();
+    int PC_int;
+    while(1)
+    {
+        PC_int=PC/4;
+        cout << "PC --> " << PC << endl;
+        FunctionPointer2 func2 = instructionFunctions[program[PC_int].opcode];
+        func2(program[PC_int]);
+        // cout << "here" << endl;
+    }
+}
 
 int main() 
 {
-    instruction test;
-    test.r1 = 0; test.rd = 5; test.immidiate = 0;
-    uint32_t number = 12;
-    uint8_t *bytes = reinterpret_cast<uint8_t*>(&number);
-    for (int i = 0; i < 4; ++i) 
-    {
-        memory[i] = bytes[i];
-    }
-    LW(test);
-    cout << reg[test.rd];
-    return 0;
+    reg[1] = 5;
+    reg[2] = 3;
+    PC = 0;
+    execute();
+    // uint8_t *bytes = reinterpret_cast<uint8_t*>(&number);
+    // for (int i = 0; i < 4; ++i) 
+    // {
+    //     memory[i] = bytes[i];
+    // }
+
 }

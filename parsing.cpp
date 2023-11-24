@@ -369,11 +369,11 @@ void extractCode()
     }
 }
 
-int main()
-{
-    extractCode();
-    for(auto i: program)
-    {
-        cout << i.opcode << '\t' << i.rd << '\t' << i.immidiate << '\t' << i.r1 << '\t' << i.r2 << endl; 
-    }
-}
+// int main()
+// {
+//     extractCode();
+//     for(auto i: program)
+//     {
+//         cout << i.opcode << '\t' << i.rd << '\t' << i.immidiate << '\t' << i.r1 << '\t' << i.r2 << endl; 
+//     }
+// }
