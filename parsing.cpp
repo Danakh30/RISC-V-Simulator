@@ -17,7 +17,49 @@ struct instruction
 };
 vector<instruction> program;
 using FunctionPointer = void (*)(string);
-unordered_map<string, FunctionPointer> parseFunctions;
+unordered_map<string, FunctionPointer> parseFunctions=
+{
+    {"LUI", &parseGroup1},
+    {"AUIPC", &parseGroup1},
+    {"JAL", &parseJAL},
+    {"JALR", &parseGroup2},
+    {"ADDI", &parseGroup2},
+    {"SLTI", &parseGroup2},
+    {"SLTIU", &parseGroup2},
+    {"XORI", &parseGroup2},
+    {"ORI", &parseGroup2},
+    {"ANDI", &parseGroup2},
+    {"SLLI", &parseGroup2},
+    {"SRLI", &parseGroup2},
+    {"SRAI", &parseGroup2},
+    {"LB", &parseGroup3},
+    {"LH", &parseGroup3},
+    {"LW", &parseGroup3},
+    {"LBU", &parseGroup3},
+    {"LHU", &parseGroup3},
+    {"BEQ", &parseGroup4},
+    {"BNE", &parseGroup4},
+    {"BLT", &parseGroup4},
+    {"BGE", &parseGroup4},
+    {"BLTU", &parseGroup4},
+    {"BGEU", &parseGroup4},
+    {"SB", &parseGroup5},
+    {"SH", &parseGroup5},
+    {"SW", &parseGroup5},
+    {"ADD", &parseGroup6},
+    {"SUB", &parseGroup6},
+    {"SLL", &parseGroup6},
+    {"SLT", &parseGroup6},
+    {"SLTU", &parseGroup6},
+    {"XOR", &parseGroup6},
+    {"SRL", &parseGroup6},
+    {"SRA", &parseGroup6},
+    {"OR", &parseGroup6},
+    {"AND", &parseGroup6},
+    {"FENCE", &parseGroup7},
+    {"ECALL", &parseGroup7},
+    {"EBREAK", &parseGroup7}
+};
 
 vector<string> removeSubstring(string& originalString, const string& substringToRemove) 
 {
