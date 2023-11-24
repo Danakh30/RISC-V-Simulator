@@ -37,7 +37,8 @@ void readNBytes(uint32_t address, int byte_count, int index)
 {
     reg[index] = 0;
 
-    for (uint32_t i = 0; i < byte_count; ++i) {
+    for (uint32_t i = 0; i < byte_count; ++i) 
+    {
         reg[index] |= (uint32_t(memory[address + i]) << (8 * i));
 
     }
