@@ -152,6 +152,62 @@ void LW(instruction exe)
     PC+=4;
 }
 
+void LBU(instruction exe)
+{
+    int8_t eightBit = memory[reg[exe.r1]+exe.immidiate];
+    reg[exe.rd] = static_cast<uint32_t>(static_cast<uint8_t>(eightBit));
+    PC+=4;
+}
+
+void LHU(instruction exe) 
+{
+    uint32_t address = reg[exe.r1] + exe.immidiate;
+    uint16_t halfword = static_cast<uint16_t>(memory[address]) |
+                        (static_cast<uint16_t>(memory[address + 1]) << 8);
+    reg[exe.rd] = static_cast<uint32_t>(halfword);
+    PC += 4;
+}
+
+void SB(instruction exe) 
+{
+    uint32_t address = reg[exe.r1] + exe.immidiate;
+    uint8_t valueToStore = static_cast<uint8_t>(reg[exe.r2]);
+    memory[address] = valueToStore;
+    PC += 4;
+}
+
+void SH(instruction exe) 
+{
+    uint32_t address = reg[exe.r1] + exe.immidiate;
+    uint16_t valueToStore = static_cast<uint16_t>(reg[exe.r2]);
+    memory[address] = static_cast<uint8_t>(valueToStore & 0xFF);
+    memory[address + 1] = static_cast<uint8_t>((valueToStore >> 8) & 0xFF);
+    PC += 4;
+}
+
+void SW(instruction exe) 
+{
+    uint32_t address = reg[exe.r1] + exe.immidiate;
+    uint32_t valueToStore = reg[exe.r2];
+    memory[address] = static_cast<uint8_t>(valueToStore & 0xFF);
+    memory[address + 1] = static_cast<uint8_t>((valueToStore >> 8) & 0xFF);
+    memory[address + 2] = static_cast<uint8_t>((valueToStore >> 16) & 0xFF);
+    memory[address + 3] = static_cast<uint8_t>((valueToStore >> 24) & 0xFF);
+    PC += 4;
+}
+
+void ADDI(instruction exe) 
+{
+    reg[exe.rd] = reg[exe.r1] + exe.immidiate;
+    PC += 4;
+}
+
+void SLTI(instruction exe) 
+{
+    reg[exe.rd] = (static_cast<int32_t>(reg[exe.r1]) < static_cast<int32_t>(exe.immidiate)) ? 1 : 0;
+    PC += 4;
+}
+
  void AND(int RD,int RS1, int RS2)
 {
     // And x1, x1, x2
