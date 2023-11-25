@@ -1,0 +1,7 @@
+ADDI X10, X0, 10    
+ADDI X5,X0,0        
+ADDI X28, X0, 1    
+BGT X28,X10,4   
+ADD X5,X5,X28      
+ADDI X28,X28,1     
+BEQ X0,X0,-4
