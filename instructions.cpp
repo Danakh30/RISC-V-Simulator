@@ -335,6 +335,13 @@ void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
     }
     cout.setf(std::ios_base::dec, std::ios_base::basefield);
 }
+void printMemory() {
+    cout << "Memory:\n";
+    for (const auto& memo : memory) {
+        cout << "Address: " << memo.first << ", Value: " << static_cast<int>(memo.second) << '\n';
+    }
+    cout << '\n';
+}
 void output() {
     cout << "PC: " << PC << '\n';
     cout << "Registers:\n";
@@ -346,8 +353,11 @@ void output() {
             cout << '\n';
         }
         cout << '\n';
+    printMemory();
+
     }
 }
+
 using FunctionPointer2 = void (*)(instruction);
 unordered_map<string, FunctionPointer2> instructionFunctions=
 {
