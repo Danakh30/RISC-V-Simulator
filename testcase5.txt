@@ -4,4 +4,5 @@ LW X5,0(X6)
 LW X7,4(X6)
 SW X7,0(X6)
 SW X5,4(X6)
-JALR x0,0(x1)
+JALR x0,x1,0
+//before running this program add a terminating instruction
