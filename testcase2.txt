@@ -4,4 +4,4 @@ SUB X6, X6,X5
 BEQ X0, X0,4
 SUB X5, X5,X6
 BEQ X0, X0,-5
-JALR zero, 0(X1)
+JALR x0,X1,0
