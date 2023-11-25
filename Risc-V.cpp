@@ -2,9 +2,7 @@
 using namespace std;
 
 
-register_file reg;
-map<uint32_t, int8_t> memory; 
-int pc;
+
 
 class register_file {
 private:
@@ -20,6 +18,10 @@ public:
         return r[index];
     }
 };
+
+register_file reg;
+map<uint32_t, int8_t> memory; 
+int pc;
 struct instruction
 {
     string opcode;
@@ -37,7 +39,7 @@ struct instruction
 
 void writeNBytes(uint32_t address, uint32_t value, int byte_count)
 {
-    for (uint32_t i = 0; i < byte_count; ++i) {
+    for (int i = 0; i < byte_count; ++i) {
         memory[address + i] = value & 0xFF;
         value >>= 8;
     }
@@ -46,9 +48,8 @@ void readNBytes(uint32_t address, int byte_count, int index)
 {
     reg[index] = 0;
 
-    for (uint32_t i = 0; i < byte_count; ++i) {
+    for (int i = 0; i < byte_count; ++i) {
         reg[index] |= (memory[address + i] << (8 * i));
-
     }
 }
  void AND(instruction exe)
@@ -165,11 +166,33 @@ void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
     switch (base) {
         case 'h':
             cout << hex << value;
+            break;
         case 'b':
             cout << bitset<32>(value);
+            break;
         case 'd':
             cout << value;
+            break;
         default:
             cout << "Error: Unrecognized base " << base << '\n';
     }
+    cout.setf(std::ios_base::dec, std::ios_base::basefield);
 }
+
+void output() {
+    cout << "PC: " << pc << '\n';
+    cout << "Registers:\n";
+    char bases[] = {'b', 'd', 'h'};
+    for (char base : bases) {
+        for (int i = 0; i < 32; ++i) {
+            cout << "X" << i << ' ';
+            print(reg[i], base);
+            cout << '\n';
+        }
+        cout << '\n';
+    }
+}
+
+
+
+
