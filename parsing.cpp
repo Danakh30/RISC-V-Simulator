@@ -159,7 +159,7 @@ void parseGroup3(string g3) //LB - LH - LW - LBU - LHU
     size_t pos2= tokens[1].find(')');
     temp.immidiate = stoi(tokens[1].substr(0,pos));
     temp.r1 = stoi(tokens[1].substr(pos+2,pos2));
-    program.push_back(temp);   
+    program.push_back(temp); 
 }
 
 void parseGroup4(string g4) //BEQ - BNE - BLT - BGE - BLTU - BGEU
@@ -191,7 +191,6 @@ void parseGroup4(string g4) //BEQ - BNE - BLT - BGE - BLTU - BGEU
         tokens = removeSubstring(g4, "BGEU");
         temp.opcode = "BGEU";       
     }
-
     else 
     {
         tokens = removeSubstring(g4, "BGE");
@@ -200,7 +199,7 @@ void parseGroup4(string g4) //BEQ - BNE - BLT - BGE - BLTU - BGEU
     temp.r1=stoi(tokens[0].substr(1));
     temp.r2=stoi(tokens[1].substr(1));
     temp.immidiate=stoi(tokens[2]);
-    program.push_back(temp); 
+    program.push_back(temp);   
 }
 
 void parseGroup5(string g5) //SB - SH - SW
@@ -227,7 +226,7 @@ void parseGroup5(string g5) //SB - SH - SW
     size_t pos2= tokens[1].find(')');
     temp.immidiate = stoi(tokens[1].substr(0,pos));
     temp.r1 = stoi(tokens[1].substr(pos+2,pos2));
-    program.push_back(temp);  
+    program.push_back(temp); 
 }
 
 void parseGroup6(string g6) //ADD - SUB - SLL - SLT - SLTU - XOR - SRL - SRA - OR - AND 
@@ -287,7 +286,7 @@ void parseGroup6(string g6) //ADD - SUB - SLL - SLT - SLTU - XOR - SRL - SRA - O
     temp.rd=stoi(tokens[0].substr(1));
     temp.r1=stoi(tokens[1].substr(1));
     temp.r2=stoi(tokens[2].substr(1));
-    program.push_back(temp); 
+    program.push_back(temp);  
 } 
 
 void parseGroup7(string g7) //FENCE - ECALL - EBREAK

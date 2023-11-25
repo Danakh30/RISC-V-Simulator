@@ -3,10 +3,9 @@
 int PC;
 unordered_map<uint32_t, int8_t> memory;
 
-
 class register_file {
 private:
-    uint32_t r[32]; //registers
+    uint32_t r[32]; 
 public:
     register_file() {
         for (int i = 0; i < 32; ++i) {
@@ -23,15 +22,10 @@ register_file reg;
 void writeNBytes(uint32_t address, uint32_t value, int byte_count)
 {
     for (uint32_t i = 0; i < byte_count; ++i) {
-        memory[address + i] = value & 0xFF; // 11111111
+        memory[address + i] = value & 0xFF;
         value >>= 8;
     }
-    // 909
-    // 01110101 01111111 01110101 00010101
-    // 00000000 00000000 00000000 11111111 &
 
-    // 00000000 00000000 00000000 00010101
-    // add + 3  add + 2  add + 1  add + 0
  }
 void readNBytes(uint32_t address, int byte_count, int index)
 {
@@ -43,8 +37,17 @@ void readNBytes(uint32_t address, int byte_count, int index)
 
     }
 }
-//LW x1, 32(x18) 
-//SW rs2, offset(rs1)
+
+void InputToMemory()
+{
+    int32_t value;
+    uint32_t address;
+    ifstream memoryload("memoryload.txt");
+
+    while(memoryload >> address >> value) {
+       writeNBytes(address, value, 1);
+    }
+}
 void LUI(instruction exe)
 {
     reg[exe.rd] = exe.immidiate << 12;
@@ -208,22 +211,25 @@ void SLTI(instruction exe)
     PC += 4;
 }
 
- void AND(int RD,int RS1, int RS2)
+  void AND(instruction exe)
 {
-    // And x1, x1, x2
-    reg[RD] = reg[RS1] & reg[RS2];
-    PC++;
-    // R3=R1&R2;
+    reg[exe.rd] = reg[exe.r1] & reg[exe.r2];
+    PC+=4;
  }
- void OR (int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] | reg[RS2];
-    PC++;
+ void ANDI(instruction exe)
+{
+    reg[exe.rd] = reg[exe.r1] & exe.immidiate;
+    PC+=4;
  }
-void ORI(int RD,int RS1,int immediate)
+ void OR (instruction exe)
  {
-    reg[RD] = reg[RS1] | immediate;
-    PC++;
+    reg[exe.rd] = reg[exe.r1] | reg[exe.r2];
+    PC+=4;
+ }
+void ORI(instruction exe)
+ {
+    reg[exe.rd] = reg[exe.r1] | exe.immidiate;
+    PC+=4;
  }
  void ADD(instruction exe)
  {
@@ -235,74 +241,71 @@ void SUB(instruction exe)
     reg[exe.rd] = reg[exe.r1] - reg[exe.r2];
     PC+=4;
  }
- void ADDI(int RD,int RS1,int immediate)
+
+ void XOR(instruction exe)
  {
-    reg[RD] = reg[RS1] + immediate;
-    PC++;
+    reg[exe.rd] = reg[exe.r1] ^ reg[exe.r2];
+    PC+=4;
  }
- void XOR(int RD,int RS1,int RS2)
+ void XORI(instruction exe)
  {
-    reg[RD] = reg[RS1] ^ reg[RS2];
-    PC++;
+    reg[exe.rd] = reg[exe.r1] ^ exe.immidiate;
+    PC+=4;
  }
- void XORI(int RD,int RS1,int immediate)
+void SLL(instruction exe)
  {
-    reg[RD] = reg[RS1] ^ immediate;
-    PC++;
+    reg[exe.rd] = reg[exe.r1] << reg[exe.r2];
+    PC+=4;
  }
-void SLL(int RD,int RS1,int RS2)
+void SLLI(instruction exe)
  {
-    reg[RD] = reg[RS1] << reg[RS2];
-    PC++;
+    reg[exe.rd] = reg[exe.r1] << uint32_t(exe.immidiate);
+    PC+=4;
  }
-void SLLI(int RD,int RS1,int shamt)
+void SLT(instruction exe)
  {
-    reg[RD] = reg[RS1] << uint32_t(shamt);
-    PC++;
+    reg[exe.rd] = int32_t(reg[exe.r1]) < int32_t(reg[exe.r2]);
+    PC+=4;
  }
-void SLT(int RD,int RS1,int RS2)
+void SLTU(instruction exe)
  {
-    reg[RD] = int32_t(reg[RS1]) < int32_t(reg[RS2]);
- }
-void SLTU(int RD,int RS1,int RS2)
- {
-    reg[RD] = reg[RS1] < reg[RS2];
+    reg[exe.rd] = reg[exe.r1] < reg[exe.r2];
+    PC+=4;
  } 
-void SLTIU(int RD,int RS1,int immediate)
+void SLTIU(instruction exe)
  {
-    reg[RD] = reg[RS1] < immediate;
+    reg[exe.rd] = reg[exe.r1] < exe.immidiate;
+    PC+=4;
  }
-void SRA(int RD,int RS1,int RS2)
+void SRA(instruction exe)
  {
-    reg[RD] = int32_t(reg[RS1]) >> int32_t(reg[RS2]);
+    reg[exe.rd] = int32_t(reg[exe.r1]) >> int32_t(reg[exe.r2]);
+    PC+=4;
  }
-void SRAI(int RD,int RS1,int shamt)
+void SRAI(instruction exe)
  {
-    reg[RD] = int32_t(reg[RS1]) >> shamt;
+    reg[exe.rd] = int32_t(reg[exe.r1]) >> exe.immidiate;
+    PC+=4;
  }
-void SRLI(int RD,int RS1,int shamt)
+void SRLI(instruction exe)
  {
-    reg[RD] = reg[RS1] >> uint32_t(shamt);
+    reg[exe.rd] = reg[exe.r1] >> uint32_t(exe.immidiate);
+    PC+=4;
  }
-void SRL(int RD,int RS1,int RS2)
+void SRL(instruction exe)
  {
-    reg[RD] = reg[RS1] >> reg[RS2];
+    reg[exe.rd] = reg[exe.r1] >> reg[exe.r2];
+    PC+=4;
  }
-void SLTI(int RD, int RS1, int immediate)
-{
-    reg[RD] = int32_t(reg[RS1]) < immediate;
+
+void EBREAK(instruction exe) {
+    exit(0);
+    PC+=4;
 }
-void EBREAK(instruction exe) 
-{
+void ECALL(instruction exe) {
     exit(0);
 }
-void ECALL(instruction exe) 
-{
-    exit(0);
-}
-void FENCE(instruction exe) 
-{
-    cout << reg[3] << '\n' << reg[4] << endl;
+void FENCE(instruction exe) {
     exit(0);
 }
 
@@ -310,14 +313,41 @@ void print(uint32_t &value, char base/*b: binary, h:hex, d:decimal*/) {
     switch (base) {
         case 'h':
             cout << hex << value;
+            break;
         case 'b':
             cout << bitset<32>(value);
+            break;
         case 'd':
             cout << value;
+            break;
         default:
             cout << "Error: Unrecognized base " << base << '\n';
     }
+    cout.setf(std::ios_base::dec, std::ios_base::basefield);
 }
+void printMemory() {
+    cout << "Memory:\n";
+    for (const auto& memo : memory) {
+        cout << "Address: " << memo.first << ", Value: " << static_cast<int>(memo.second) << '\n';
+    }
+    cout << '\n';
+}
+void output() {
+    cout << "PC: " << PC << '\n';
+    cout << "Registers:\n";
+    char bases[] = {'b', 'd', 'h'};
+    for (char base : bases) {
+        for (int i = 0; i < 32; ++i) {
+            cout << "X" << i << ' ';
+            print(reg[i], base);
+            cout << '\n';
+        }
+        cout << '\n';
+    printMemory();
+
+    }
+}
+
 using FunctionPointer2 = void (*)(instruction);
 unordered_map<string, FunctionPointer2> instructionFunctions=
 {
@@ -327,13 +357,13 @@ unordered_map<string, FunctionPointer2> instructionFunctions=
     {"JALR", &JALR},
     {"ADDI", &ADDI},
     {"SLTI", &SLTI},
-    //{"SLTIU", &SLTIU},
-    //{"XORI", &XORI},
-    // {"ORI", &ORI},
-    // //{"ANDI", &ANDI},
-    //{"SLLI", &SLLI},
-    //{"SRLI", &SRLI},
-    //{"SRAI", &SRAI},
+    {"SLTIU", &SLTIU},
+    {"XORI", &XORI},
+    {"ORI", &ORI},
+    {"ANDI", &ANDI},
+    {"SLLI", &SLLI},
+    {"SRLI", &SRLI},
+    {"SRAI", &SRAI},
     {"LB", &LB},
     {"LH", &LH},
     {"LW", &LW},
@@ -350,14 +380,14 @@ unordered_map<string, FunctionPointer2> instructionFunctions=
     {"SW", &SW},
     {"ADD", &ADD},
     {"SUB", &SUB},
-    //{"SLL", &SLL},
-    //{"SLT", &SLT},
-    //{"SLTU", &SLTU},
-    // {"XOR", &XOR},
-    //{"SRL", &SRL},
-    // {"SRA", &SRA},
-    // {"OR", &OR},
-    //{"AND", &AND},
+    {"SLL", &SLL},
+    {"SLT", &SLT},
+    {"SLTU", &SLTU},
+    {"XOR", &XOR},
+    {"SRL", &SRL},
+    {"SRA", &SRA},
+    {"OR", &OR},
+    {"AND", &AND},
     {"FENCE", &FENCE},
     {"ECALL", &ECALL},
     {"EBREAK", &EBREAK}
@@ -365,6 +395,7 @@ unordered_map<string, FunctionPointer2> instructionFunctions=
 
 void execute()
 {
+    InputToMemory();
     extractCode();
     int PC_int;
     while(1)
@@ -373,20 +404,21 @@ void execute()
         cout << "PC --> " << PC << endl;
         FunctionPointer2 func2 = instructionFunctions[program[PC_int].opcode];
         func2(program[PC_int]);
-        // cout << "here" << endl;
+        cout << "here" << endl;
+        output();
     }
 }
 
 int main() 
 {
-    reg[1] = 5;
-    reg[2] = 3;
-    PC = 0;
+    int startingAddress;
+    cout << "From which address would you like to start the execution (addresses are multiples of 4): ";
+    cin >> startingAddress;
+    PC = startingAddress;
     execute();
     // uint8_t *bytes = reinterpret_cast<uint8_t*>(&number);
     // for (int i = 0; i < 4; ++i) 
     // {
     //     memory[i] = bytes[i];
     // }
-
 }
